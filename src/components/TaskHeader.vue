@@ -1,7 +1,7 @@
 <template>
     <header>
         <h1>{{title}}</h1>
-        <my-button  @btn-click="$emit('toggle-add-task')" :label="showAddTask ?   'Close' : 'Add Task'" :color="showAddTask ? 'red' : 'green'"/>
+        <my-button v-show="toggleAddTask" @btn-click="$emit('toggle-add-task')" :label="showAddTask ?   'Close' : 'Add Task'" :color="showAddTask ? 'red' : 'green'"/>
     </header>
 </template>
 
@@ -16,6 +16,15 @@ export default {
         },
         showAddTask:Boolean
 
+    },
+    computed:{
+        toggleAddTask(){
+            if(this.$route.path === '/'){
+                return true;
+            } else {
+                return false;
+            }
+        }
     },
     components:{
         MyButton,
