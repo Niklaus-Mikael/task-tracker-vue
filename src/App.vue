@@ -1,66 +1,31 @@
 <template>
   <div class="container">
     <TaskHeader @toggle-add-task="toggleAddTask"  :showAddTask="showAddTask"/>
-    <div v-if="showAddTask">
-      <add-task @add-new-task="addNewTask" />
-    </div>
-    <my-tasks :tasks="tasks" @delete-task="deleteTask" @mark-as-complete="markAsComplete"/>
+   <router-view :showAddTask="showAddTask"></router-view>
+    <task-footer />
   </div>
 </template>
 
 <script>
 import TaskHeader from './components/TaskHeader.vue'
-import MyTasks from './components/MyTasks.vue'
-import AddTask from './components/AddTask.vue'
+import TaskFooter from './components/TaskFooter.vue'
+
 export default {
   name: 'App',
   components:{
     TaskHeader,
-    MyTasks,
-    AddTask,
+    TaskFooter,
+   
   },
   data(){
     return {
-      tasks:[],
       showAddTask:false
     }
   },
-   async created(){
-    this.tasks = await this.fetchTasks();
-  },
   methods:{
-    async deleteTask(id){
-      await fetch(`/api/tasks/${id}`,{
-        method:'DELETE',
-      });
-    this.tasks=this.tasks.filter(item=>item.id != id);
-    },
-    markAsComplete(id){
-      this.tasks.map(item=>{
-        if(item.id == id){
-          item.completed = !item.completed;
-        }
-      })
-    },
-    async addNewTask(task){
-      const res = await fetch('/api/tasks',{
-        method:'POST',
-        headers:{
-          'Content-type':'application/json',
-        },
-        body:JSON.stringify(task)
-      });
-     const data =  await res.json();
-      this.tasks.push(data);
-    },
     toggleAddTask(){
         this.showAddTask = !this.showAddTask;
     },
-    async fetchTasks(){
-      const res = await fetch('/api/tasks')
-      const data = await res.json();
-      return data;
-    }
   }
 }
 </script>
